@@ -21,27 +21,28 @@
   <li><input id="newValue" type="text"><button onclick="setValue()">새 값으로 저장하기</button>
       <div id="result"></div></li>
   <li>새 값을 저장한 후 팬딩 트랜잭션이 블록에 포함되면 자동으로 페이지가 업데이트될 것입니다.</li>
+                      
+  <li><input id="newMessage" type="text"><button onclick="sendMessage()">메시지 보내기</button>          
 </ul>
 
 컨트랙트 소스
 <script src="https://gist.github.com/atomrigs/7c633570496b79623bed5d1286f93f3a.js"></script>
 
-HTML 소스<br>
-<a href="https://github.com/atomrigs/atomrigs.github.io/blob/master/simplestorage.html">https://github.com/atomrigs/atomrigs.github.io/blob/master/simplestorage.html</a>;
-<br><br>
-<p>
-<a href="http://www.chaintalk.io/archive/lecture?sca=%EB%82%98%EB%8F%84+dApp+%EA%B0%9C%EB%B0%9C"><i>나도 dApp 개발해 보자 시리즈 by Atomrigs ⓒ 2017</i></a>
-</p>
-
 </body>
 <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
-<!-- script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script -->
 <script>
 var contractAddress = '0xfc7b968f2d6ea3072f5b8e358a8a5b8ba8e0689e';
 var abi = [{"constant": false,	"inputs": [{"name": "x","type": "uint256"}],"name": "set","outputs": [],"payable": false,"type": "function","stateMutability": "nonpayable"},{"constant": true,"inputs": [],"name": "get","outputs": [{"name": "","type": "uint256"	}],"payable": false,"type": "function","stateMutability": "view"}];
 
 var simpleStorageContract;
 var simpleStorage;
+
+
+var shh;
+var appName = "simpleWhisperApp";
+var myName = "jolim";
+var myIdentity;
+
 
 window.addEventListener('load', function() {
 
@@ -55,6 +56,9 @@ window.addEventListener('load', function() {
     window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
   }
   // Now you can start your app & access web3 freely:
+  shh = web3.shh;
+  myIdentity = shh.newIdentity();
+
   startApp();
 });
 
@@ -103,7 +107,20 @@ function setValue() {
       }
    });
  });
-}
+
+                                                                                                                 
+function sendMessage() {                                                                                                                
+shh.post({
+  "from": myIdentity,
+  "topics": [ web3.fromAscii(appName) ],
+  "payload": [ web3.fromAscii(myName), web3.fromAscii(newMessage) ],
+  "ttl": 100,
+  "priority": 1000
+});                                                                                                                 
+                                                                                                                 
+});
+                                                                                                                 
+                                                                                                                 }
 
 </script>
 </html>
